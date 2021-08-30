@@ -24,19 +24,22 @@ int main()
     std::vector<RectangleShape> snake;
     std::vector<Vector2f> positions;
 
-    RenderWindow window (sf::VideoMode(width,height), "Snake");
+    bool fuck = false;
 
-    window.setFramerateLimit(60);
+    RenderWindow window (sf::VideoMode(width,height), "Snake");
+    direction.x = speed;
+    
+    window.setFramerateLimit(45);
 
     for(int i = 0; i < segments; i++){
         positions.push_back(Vector2f(10,10));
     }
 
-        for(int i = 0; i < segments; i++){
-            RectangleShape s(Vector2f(30,30));
-            s.setFillColor(Color::Blue);
-            snake.push_back(s);
-        }
+    for(int i = 0; i < segments; i++){
+        RectangleShape s(Vector2f(30,30));
+        s.setFillColor(Color::Blue);
+        snake.push_back(s);
+    }
 
     while(window.isOpen()){
         Event event;
@@ -93,11 +96,18 @@ int main()
             snake.push_back(s);
         }
 
+        for(int i = 0; i < segments; i++){
+            if(snake[0].getGlobalBounds().intersects(snake[i].getGlobalBounds())){
+                fuck = true;
+            }
+        }
+
         eat.setPosition(eatPosition.x,eatPosition.y);
 
 ///////
 
         Text text;
+        Text printFuck;
 
         Font font;
         font.loadFromFile("impact2.ttf");
@@ -106,6 +116,12 @@ int main()
         text.setCharacterSize(24);
         text.setFillColor(Color::Red);
         text.setPosition(1000,100);
+
+        // printFuck.setFont(font);
+        // printFuck.setString("FUCK!");
+        // printFuck.setCharacterSize(450);
+        // printFuck.setFillColor(Color(128,0,128));
+        // printFuck.setPosition(width/2-450,height/2-250);
 //////
         window.clear();
         window.draw(text);
@@ -117,17 +133,18 @@ int main()
         window.display();        
 
 
+        cp = snake[0].getPosition();
 
-        for(int i = 0; i < segments; i++){
-            cp = snake[0].getPosition();
+        for(int i = 0; i < segments; i++){  
             positions[i] = snake[i].getPosition(); 
         }
 
-        cp = snake[0].getPosition();
         if (cp.x > width){cp.x = 0;};
         if (cp.x < 0){cp.x = width;};
         if (cp.y > height){cp.y = 0;};
         if (cp.y < 0){cp.y = height;};
+
+
     }
 
     return 0;
